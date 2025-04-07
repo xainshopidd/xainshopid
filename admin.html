@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Xain Shopid</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    input, textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #1a1a1a;
+      color: white;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #a5ff00;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .success {
+      color: #a5ff00;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tambah Produk - Admin</h1>
+
+  <div id="form-area" style="display: none;">
+    <form id="product-form">
+      <input type="text" id="name" placeholder="Nama Produk" required />
+      <textarea id="description" placeholder="Deskripsi Produk" required></textarea>
+      <input type="text" id="image_url" placeholder="Link Gambar" required />
+      <input type="text" id="product_url" placeholder="Link Shopee" required />
+      <button type="submit">Tambah Produk</button>
+    </form>
+    <div class="success" id="success-msg"></div>
+    <button onclick="logout()" style="margin-top:2rem;background:#ff3c3c;">Logout</button>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabaseUrl = 'ISI_DENGAN_URL_KAMU';
+    const supabaseKey = 'ISI_DENGAN_ANON_KEY_KAMU';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const session = localStorage.getItem('session');
+    if (!session) {
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('form-area').style.display = 'block';
+    }
+
+    document.getElementById('product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const description = document.getElementById('description').value;
+      const image_url = document.getElementById('image_url').value;
+      const product_url = document.getElementById('product_url').value;
+
+      const { error } = await supabase.from('products').insert([{ name, description, image_url, product_url }]);
+
+      const msg = document.getElementById('success-msg');
+      if (error) {
+        msg.textContent = 'Gagal tambah produk!';
+        msg.style.color = 'red';
+        console.error(error);
+      } else {
+        msg.textContent = 'Produk berhasil ditambahkan!';
+        msg.style.color = '#a5ff00';
+        document.getElementById('product-form').reset();
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem('session');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
