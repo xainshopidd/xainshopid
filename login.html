@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Admin</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: sans-serif;
+      padding: 2rem;
+    }
+    input {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #555;
+      background: #1a1a1a;
+      color: white;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      background: #a5ff00;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Login Admin</h1>
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button onclick="login()">Login</button>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabaseUrl = 'ISI_DENGAN_URL_KAMU';
+    const supabaseKey = 'ISI_DENGAN_ANON_KEY_KAMU';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    async function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert('Login gagal!');
+        console.error(error);
+      } else {
+        // Simpan session ke localStorage
+        localStorage.setItem('session', JSON.stringify(data.session));
+        // Redirect ke halaman admin
+        window.location.href = 'admin.html';
+      }
+    }
+  </script>
+</body>
+</html>
