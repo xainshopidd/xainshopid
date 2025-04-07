@@ -50,9 +50,8 @@
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
-  alert('Login gagal: ' + error.message);
-  console.error('Detail error:', error);
-      }
+        alert('Login gagal: ' + error.message);
+        console.error('Detail error:', error);
       } else {
         // Simpan session ke localStorage
         localStorage.setItem('session', JSON.stringify(data.session));
