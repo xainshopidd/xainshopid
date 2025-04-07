@@ -1,70 +1,76 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Xain Shopid</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #101820;
-      color: #ffffff;
+      font-family: sans-serif;
+      background: #0f0f0f;
+      color: #fff;
       margin: 0;
-      padding: 0;
-    }
-    header {
-      background: linear-gradient(90deg, #d4ff00, #00ff94);
-      color: #000;
-      padding: 20px;
-      text-align: center;
-    }
-    main {
-      padding: 20px;
+      padding: 1rem;
     }
     .product {
-      background-color: #1c1c1c;
-      margin-bottom: 20px;
-      padding: 15px;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px #00ff94;
+      margin-bottom: 1rem;
     }
-    .product h3 {
-      color: #d4ff00;
+    .product img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      border-radius: 8px;
     }
     .product a {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 8px 15px;
-      background-color: #00ff94;
-      color: #000;
+      color: #a5ff00;
       text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #0f0f0f;
-      color: #aaa;
-      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Xain Shopid</h1>
-    <p>Produk Gaming Terbaik dari Shopee</p>
-  </header>
-  <main>
-    <div class="product">
-  <img src="https://i.imgur.com/nf6jcSK.jpeg" alt="MOFii Mouse" width="200">
-  <h3>MOFii Mouse Wireless Gaming</h3>
-  <p>Rechargeable Baterai, Type-C, RGB, 1600DPI</p>
-  <a href="https://s.shopee.co.id/8pYGCHLcdT" target="_blank">Beli di Shopee</a>
-    </div>
-  </main>
-  <footer>
-    © 2025 Xain Shopid. All rights reserved.
-  </footer>
+  <h1>Xain Shopid - Produk Gaming</h1>
+  <div id="product-list">Memuat produk...</div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+    const supabaseUrl = 'https://svjlwcibqsracjupfnaj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2amx3Y2licXNyYWNqdXBmbmFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjE0ODEsImV4cCI6MjA1OTU5NzQ4MX0.WE2QNNocwVHyS4eYcEfeRP7DAGezZkLrgLxde2Nm6wY';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    async function loadProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const list = document.getElementById('product-list');
+      list.innerHTML = '';
+
+      if (error) {
+        list.innerHTML = 'Gagal memuat produk.';
+        console.error(error);
+        return;
+      }
+
+      data.forEach(product => {
+        const item = document.createElement('div');
+        item.className = 'product';
+        item.innerHTML = `
+          <img src="${product.image_url}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p>${product.description}</p>
+          <a href="${product.product_url}" target="_blank">Beli di Shopee</a>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    loadProducts();
+  </script>
 </body>
 </html>
