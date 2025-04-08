@@ -12,34 +12,59 @@
       margin: 0;
       padding: 1rem;
     }
+    h1 {
+      text-align: center;
+      color: #a5ff00;
+      margin-bottom: 2rem;
+    }
+    #product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
     .product {
       background: #1a1a1a;
-      border: 1px solid #444;
+      border: 1px solid #333;
       padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(165, 255, 0, 0.1);
     }
     .product img {
       width: 100%;
-      max-width: 200px;
-      height: auto;
+      max-height: 200px;
+      object-fit: cover;
       border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .product h3 {
+      margin: 0.5rem 0;
+    }
+    .product p {
+      font-size: 0.9rem;
+      color: #ccc;
     }
     .product a {
-      color: #a5ff00;
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #a5ff00;
+      color: #000;
       text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>Xain Shopid - Produk Gaming</h1>
-  <div id="product-list">Memuat produk...</div>
+  <div id="product-list"><em>Memuat produk...</em></div>
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js'
 
     const supabaseUrl = 'https://svjlwcibqsracjupfnaj.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2amx3Y2licXNyYWNqdXBmbmFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjE0ODEsImV4cCI6MjA1OTU5NzQ4MX0.WE2QNNocwVHyS4eYcEfeRP7DAGezZkLrgLxde2Nm6wY';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // samakan dengan milikmu
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     async function loadProducts() {
@@ -57,11 +82,16 @@
         return;
       }
 
+      if (data.length === 0) {
+        list.innerHTML = 'Belum ada produk ditambahkan.';
+        return;
+      }
+
       data.forEach(product => {
         const item = document.createElement('div');
         item.className = 'product';
         item.innerHTML = `
-          <img src="${product.image_url}" alt="${product.name}" />
+          <img src="${product.image_url}" alt="Gambar produk: ${product.name}" />
           <h3>${product.name}</h3>
           <p>${product.description}</p>
           <a href="${product.product_url}" target="_blank">Beli di Shopee</a>
